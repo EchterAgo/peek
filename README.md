@@ -30,7 +30,7 @@
 - Frameless, always-on-top, translucent card that slides in and out
 - Cross-platform: macOS and Windows
 - Connects to your existing MQTT broker and Frigate — no server-side change
-- Optional support for Frigate's authenticated port (8971) over HTTPS, with certificate pinning
+- Optional HTTPS, including a reverse proxy on port 443; supports Frigate's authenticated port (8971) with certificate pinning
 - Optional update checks, off by default, with a notification and an installer
 
 ## How it works
@@ -71,7 +71,7 @@ Edit `config.json`:
 | Key | Description |
 | --- | --- |
 | `mqtt` | MQTT connection string, e.g. `mqtt://user:pass@host:1883` |
-| `frigateUrl` | Base URL of Frigate, e.g. `http://host:5000`, or `https://host:8971` for the authenticated port |
+| `frigateUrl` | Base URL of Frigate, e.g. `http://host:5000`, `https://host:8971` for the authenticated port, or `https://host:443` behind a reverse proxy |
 | `frigateUser` | Frigate username for the authenticated port (optional) |
 | `frigatePassword` | Frigate password for the authenticated port (optional) |
 | `topicPrefix` | Frigate MQTT topic prefix (default `frigate`) |
@@ -86,12 +86,18 @@ Edit `config.json`:
 When packaged, `config.json` is read from the app's user data folder (use the
 **Open config folder** menu item to locate it).
 
-### Authenticated Frigate
+### HTTPS and authenticated Frigate
 
-If your Frigate uses the authenticated port (usually 8971), add your Frigate
-username and password in the setup window. Peek logs in, pins your Frigate's
-certificate, and loads snapshots and the live stream over HTTPS. Leave the
-fields empty to use the open port 5000.
+Tick **Connect over HTTPS** in the setup window when Frigate is served over
+TLS, for example behind a reverse proxy on port 443, or on Frigate's own
+authenticated port (usually 8971). HTTPS is independent of login: a reverse
+proxy that terminates TLS in front of an otherwise open Frigate needs the
+checkbox but no username.
+
+If your Frigate itself requires login, also add your Frigate username and
+password. Peek then logs in, pins your Frigate's certificate, and loads
+snapshots and the live stream over HTTPS. Leave the username and password
+empty for an open port 5000 or an unauthenticated reverse proxy.
 
 ### Updates
 
