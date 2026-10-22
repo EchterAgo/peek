@@ -30,7 +30,7 @@
 - Frameless, always-on-top, translucent card that slides in and out
 - Cross-platform: macOS and Windows
 - Connects to your existing MQTT broker and Frigate — no server-side change
-- Optional HTTPS, including a reverse proxy on port 443; supports Frigate's authenticated port (8971) with certificate pinning
+- Optional HTTPS, including a reverse proxy on port 443; certificates are verified against the system trust store, with an opt-in for self-signed certificates
 - Optional update checks, off by default, with a notification and an installer
 
 ## How it works
@@ -74,6 +74,7 @@ Edit `config.json`:
 | `frigateUrl` | Base URL of Frigate, e.g. `http://host:5000`, `https://host:8971` for the authenticated port, or `https://host:443` behind a reverse proxy |
 | `frigateUser` | Frigate username for the authenticated port (optional) |
 | `frigatePassword` | Frigate password for the authenticated port (optional) |
+| `frigateAllowSelfSigned` | Accept a certificate your system does not trust (optional, HTTPS only) |
 | `topicPrefix` | Frigate MQTT topic prefix (default `frigate`) |
 | `cameras` | Map of camera name to display name. Leave `{}` to show all cameras |
 | `labels` | Only notify for these labels, e.g. `["person", "car"]`. Empty = all |
@@ -95,9 +96,15 @@ proxy that terminates TLS in front of an otherwise open Frigate needs the
 checkbox but no username.
 
 If your Frigate itself requires login, also add your Frigate username and
-password. Peek then logs in, pins your Frigate's certificate, and loads
-snapshots and the live stream over HTTPS. Leave the username and password
-empty for an open port 5000 or an unauthenticated reverse proxy.
+password. Peek then logs in and loads snapshots and the live stream over
+HTTPS. Leave the username and password empty for an open port 5000 or an
+unauthenticated reverse proxy.
+
+Peek verifies HTTPS certificates against your system trust store, so a
+certificate from a certificate authority such as Let's Encrypt works with no
+extra setup and renews freely. If your Frigate uses a self-signed
+certificate, tick **Allow self-signed certificate**; Peek then accepts that
+certificate for your Frigate host.
 
 ### Updates
 

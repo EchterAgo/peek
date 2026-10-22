@@ -3,6 +3,7 @@ const fields = {
   frigateHost: el('frigateHost'),
   frigatePort: el('frigatePort'),
   frigateHttps: el('frigateHttps'),
+  frigateSelfSigned: el('frigateSelfSigned'),
   frigateUser: el('frigateUser'),
   frigatePass: el('frigatePass'),
   corner: el('corner'),
@@ -91,7 +92,18 @@ function buildConfig() {
     delete cfg.frigatePassword
   }
 
+  if (useHttps && fields.frigateSelfSigned.checked) {
+    cfg.frigateAllowSelfSigned = true
+  } else {
+    delete cfg.frigateAllowSelfSigned
+  }
+
   return cfg
+}
+
+function updateSelfSignedRow() {
+  const row = el('selfSignedRow')
+  if (row) row.style.display = fields.frigateHttps.checked ? '' : 'none'
 }
 
 function setStatus(kind, text) {
@@ -190,6 +202,7 @@ async function init() {
     fields.frigateHost.value = f.host
     fields.frigatePort.value = f.port
     fields.frigateHttps.checked = !!f.https
+    fields.frigateSelfSigned.checked = !!existing.frigateAllowSelfSigned
     fields.frigateUser.value = existing.frigateUser || ''
     fields.frigatePass.value = existing.frigatePassword || ''
     fields.mqttHost.value = m.host
@@ -198,6 +211,7 @@ async function init() {
     fields.mqttPass.value = m.pass
     fields.corner.value = existing.corner || 'top-right'
   }
+  updateSelfSignedRow()
 }
 
 testBtn.addEventListener('click', async () => {
@@ -226,5 +240,7 @@ saveBtn.addEventListener('click', async () => {
 })
 
 cancelBtn.addEventListener('click', () => window.setup.cancel())
+
+fields.frigateHttps.addEventListener('change', updateSelfSignedRow)
 
 init()

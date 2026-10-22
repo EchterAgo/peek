@@ -38,6 +38,11 @@
         <span class="check-text">Connect over HTTPS (TLS)</span>
         <span class="info" tabindex="0">i<span class="tip">Use this when Frigate is served over HTTPS, e.g. behind a reverse proxy on port 443, or on the authenticated port 8971.</span></span>
       </label>
+      <label class="check" id="selfSignedRow">
+        <input id="frigateSelfSigned" type="checkbox" />
+        <span class="check-text">Allow self-signed certificate</span>
+        <span class="info" tabindex="0">i<span class="tip">Only needed when Frigate uses a certificate your system does not trust. Certificates from a certificate authority such as Let's Encrypt are verified normally and do not need this.</span></span>
+      </label>
       <div class="row split">
         <div>
           <label for="frigateUser">Frigate username</label>
