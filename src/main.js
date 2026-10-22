@@ -777,6 +777,14 @@ async function testConnection(cfg) {
       return { ok: false, error: 'MQTT OK, but Frigate: ' + err.message }
     }
   }
+  if (!cfg.frigateUser && frigateAuth.isHttps(cfg.frigateUrl)) {
+    try {
+      await frigateAuth.fetchConfig(cfg.frigateUrl, null)
+      return { ok: true, detail: 'MQTT broker and HTTPS Frigate URL OK.' }
+    } catch (err) {
+      return { ok: false, error: 'MQTT OK, but Frigate: ' + err.message }
+    }
+  }
   return mqttRes
 }
 
